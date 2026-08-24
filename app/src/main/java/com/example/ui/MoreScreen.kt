@@ -145,6 +145,111 @@ fun MoreScreen(
                 )
             }
 
+            // Display & Factory Visibility Settings Card
+            item {
+                val context = androidx.compose.ui.platform.LocalContext.current
+                val currentThemeMode by ThemePreferences.themeMode.collectAsStateWithLifecycle()
+                val isDark = LocalIsDarkMode.current
+
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .shadow(2.dp, RoundedCornerShape(20.dp))
+                        .testTag("factory_theme_settings_card"),
+                    colors = CardDefaults.cardColors(
+                        containerColor = if (isDark) MaterialTheme.colorScheme.surface else Color.White
+                    ),
+                    shape = RoundedCornerShape(20.dp),
+                    border = BorderStroke(1.dp, if (isDark) Color(0xFF334155) else Color.LightGray.copy(alpha = 0.3f))
+                ) {
+                    Column(modifier = Modifier.padding(16.dp)) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Box(
+                                    modifier = Modifier
+                                        .size(38.dp)
+                                        .clip(RoundedCornerShape(10.dp))
+                                        .background(if (isDark) Color(0xFF1E3A8A) else PrimaryBlue.copy(alpha = 0.1f)),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Icon(
+                                        imageVector = if (isDark) Icons.Default.DarkMode else Icons.Default.LightMode,
+                                        contentDescription = "Theme Mode",
+                                        tint = if (isDark) Color(0xFFFFD54F) else PrimaryBlue,
+                                        modifier = Modifier.size(20.dp)
+                                    )
+                                }
+                                Spacer(modifier = Modifier.width(12.dp))
+                                Column {
+                                    Text(
+                                        text = "Factory Visibility & Theme",
+                                        fontWeight = FontWeight.Bold,
+                                        fontSize = 14.sp,
+                                        color = MaterialTheme.colorScheme.onSurface
+                                    )
+                                    Text(
+                                        text = if (isDark) "Active: High-Contrast Dark" else "Active: Standard Light",
+                                        fontSize = 11.sp,
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                                    )
+                                }
+                            }
+                        }
+
+                        Spacer(modifier = Modifier.height(14.dp))
+
+                        // Theme Mode Selection Pills
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            listOf(
+                                Triple(AppThemeMode.LIGHT, "Light", Icons.Default.LightMode),
+                                Triple(AppThemeMode.DARK, "Dark Mode", Icons.Default.DarkMode),
+                                Triple(AppThemeMode.SYSTEM, "System", Icons.Default.BrightnessAuto)
+                            ).forEach { (mode, label, icon) ->
+                                val isSelected = currentThemeMode == mode
+                                Surface(
+                                    modifier = Modifier
+                                        .weight(1f)
+                                        .clip(RoundedCornerShape(12.dp))
+                                        .clickable {
+                                            ThemePreferences.setThemeMode(context, mode)
+                                        }
+                                        .testTag("theme_mode_${label.lowercase()}"),
+                                    color = if (isSelected) PrimaryBlue else if (isDark) Color(0xFF334155) else Color(0xFFF1F5F9),
+                                    shape = RoundedCornerShape(12.dp)
+                                ) {
+                                    Row(
+                                        modifier = Modifier.padding(vertical = 10.dp),
+                                        horizontalArrangement = Arrangement.Center,
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
+                                        Icon(
+                                            imageVector = icon,
+                                            contentDescription = null,
+                                            tint = if (isSelected) Color.White else if (isDark) Color(0xFFCBD5E1) else TextSecondary,
+                                            modifier = Modifier.size(16.dp)
+                                        )
+                                        Spacer(modifier = Modifier.width(6.dp))
+                                        Text(
+                                            text = label,
+                                            fontSize = 11.sp,
+                                            fontWeight = if (isSelected) FontWeight.Black else FontWeight.Bold,
+                                            color = if (isSelected) Color.White else if (isDark) Color(0xFFCBD5E1) else TextSecondary
+                                        )
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
             // Grid Layout of Corporate Modules
             item {
                 Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {

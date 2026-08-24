@@ -29,9 +29,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.example.data.InventoryViewModel
-import com.example.data.Machine
-import com.example.data.ProductionRecord
+import com.example.data.*
 import com.example.ui.theme.*
 import java.text.SimpleDateFormat
 import java.util.*
@@ -90,6 +88,9 @@ fun ProductionTrackingDashboard(
                     }
                 },
                 actions = {
+                    IconButton(onClick = { viewModel.performDataSync() }) {
+                        Icon(Icons.Default.CloudSync, contentDescription = "Sync Cloud", tint = Color.White)
+                    }
                     IconButton(onClick = { showAddForm = true }) {
                         Icon(Icons.Default.Add, contentDescription = "Log Output", tint = Color.White)
                     }
@@ -110,6 +111,67 @@ fun ProductionTrackingDashboard(
                     .verticalScroll(rememberScrollState())
                     .padding(bottom = 80.dp)
             ) {
+                // Offline Support & Firestore Sync Banner
+                val isOfflineActive by FirebaseService.isOfflineSyncActive.collectAsStateWithLifecycle()
+                val lastSyncTime by FirebaseService.lastSyncTimestamp.collectAsStateWithLifecycle()
+                
+                Surface(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp, vertical = 8.dp)
+                        .testTag("firestore_offline_status_banner"),
+                    shape = RoundedCornerShape(12.dp),
+                    color = if (isOfflineActive) Color(0xFFE8F5E9) else Color(0xFFFFF3E0),
+                    border = BorderStroke(1.dp, if (isOfflineActive) Color(0xFFA5D6A7) else Color(0xFFFFCC80))
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 14.dp, vertical = 10.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier.weight(1f)
+                        ) {
+                            Icon(
+                                imageVector = if (isOfflineActive) Icons.Default.CloudDone else Icons.Default.CloudOff,
+                                contentDescription = "Offline Cache Ready",
+                                tint = if (isOfflineActive) Color(0xFF2E7D32) else Color(0xFFE65100),
+                                modifier = Modifier.size(20.dp)
+                            )
+                            Spacer(modifier = Modifier.width(10.dp))
+                            Column {
+                                Text(
+                                    text = "Firestore Offline Engine Active",
+                                    fontSize = 12.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = if (isOfflineActive) Color(0xFF1B5E20) else Color(0xFFBF360C)
+                                )
+                                Text(
+                                    text = "Logs cached locally on disk & queued for auto-sync without internet",
+                                    fontSize = 10.sp,
+                                    color = if (isOfflineActive) Color(0xFF2E7D32) else Color(0xFFE65100)
+                                )
+                            }
+                        }
+                        
+                        TextButton(
+                            onClick = { viewModel.performDataSync() },
+                            contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp),
+                            modifier = Modifier.testTag("sync_now_button")
+                        ) {
+                            Text(
+                                text = "SYNC NOW",
+                                fontSize = 11.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = PrimaryBlue
+                            )
+                        }
+                    }
+                }
+
                 // Machine Filter chips
                 MachineFiltersRow(
                     machines = allMachines,

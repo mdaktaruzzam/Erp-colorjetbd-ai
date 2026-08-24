@@ -114,6 +114,64 @@ fun IndustrialOperationsDashboard(
                 ColorJetBrandingBanner()
             }
 
+            // Firestore Offline Logging Status
+            item {
+                val isOfflineActive by FirebaseService.isOfflineSyncActive.collectAsStateWithLifecycle()
+                Surface(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .testTag("industrial_firestore_offline_badge"),
+                    shape = RoundedCornerShape(12.dp),
+                    color = if (isOfflineActive) Color(0xFFE8F5E9) else Color(0xFFFFF3E0),
+                    border = BorderStroke(1.dp, if (isOfflineActive) Color(0xFFA5D6A7) else Color(0xFFFFCC80))
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 14.dp, vertical = 10.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier.weight(1f)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.OfflinePin,
+                                contentDescription = "Offline Persistence Enabled",
+                                tint = Color(0xFF2E7D32),
+                                modifier = Modifier.size(20.dp)
+                            )
+                            Spacer(modifier = Modifier.width(10.dp))
+                            Column {
+                                Text(
+                                    text = "Firestore Offline Local Persistence Enabled",
+                                    fontSize = 12.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = Color(0xFF1B5E20)
+                                )
+                                Text(
+                                    text = "Factory operations and production metrics log locally with zero network delay",
+                                    fontSize = 10.sp,
+                                    color = Color(0xFF2E7D32)
+                                )
+                            }
+                        }
+                        IconButton(
+                            onClick = { viewModel.performDataSync() },
+                            modifier = Modifier.size(32.dp)
+                        ) {
+                            Icon(
+                                Icons.Default.Sync,
+                                contentDescription = "Manual Sync",
+                                tint = PrimaryBlue,
+                                modifier = Modifier.size(18.dp)
+                            )
+                        }
+                    }
+                }
+            }
+
             // 2. High-Fidelity KPI Summary Matrix
             item {
                 Row(

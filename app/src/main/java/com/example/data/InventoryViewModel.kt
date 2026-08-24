@@ -687,6 +687,14 @@ class InventoryViewModel(application: Application) : AndroidViewModel(applicatio
     fun addProductionRecord(record: ProductionRecord) {
         viewModelScope.launch {
             erpDao.insertProductionRecord(record)
+            
+            // Dual persistence: sync to Firestore offline cache & remote cloud
+            try {
+                FirebaseService.syncProductionRecord(record)
+            } catch (fe: Exception) {
+                android.util.Log.e("InventoryViewModel", "Firebase production sync error: ${fe.message}")
+            }
+            
             addAuditLog("CREATE_PRODUCTION_RECORD", "Logged output ${record.output}m² against target ${record.target}m² for machine ${record.machineName}")
         }
     }
@@ -695,6 +703,24 @@ class InventoryViewModel(application: Application) : AndroidViewModel(applicatio
         viewModelScope.launch {
             erpDao.deleteProductionRecordById(id)
             addAuditLog("DELETE_PRODUCTION_RECORD", "Deleted production record id: $id")
+        }
+    }
+
+    fun performDataSync() {
+        viewModelScope.launch {
+            showLoading("Synchronizing factory data with Cloud & Local Offline Store...")
+            try {
+                // Sync all current production records to Firestore offline/online store
+                val records = allProductionRecords.value
+                if (records.isNotEmpty()) {
+                    FirebaseService.syncAllProductionRecords(records)
+                }
+                addAuditLog("DATA_SYNC", "Manual sync completed for ${records.size} production records.")
+            } catch (e: Exception) {
+                android.util.Log.e("InventoryViewModel", "Data sync error: ${e.message}")
+            } finally {
+                hideLoading()
+            }
         }
     }
 

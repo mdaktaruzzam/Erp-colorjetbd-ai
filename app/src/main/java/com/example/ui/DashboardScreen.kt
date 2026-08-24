@@ -113,6 +113,7 @@ fun OwnerDashboardContent(
     val allForeignPurchases by viewModel.allForeignPurchases.collectAsStateWithLifecycle()
     val customers by viewModel.allCustomers.collectAsStateWithLifecycle()
     val allProducts by viewModel.allProducts.collectAsStateWithLifecycle()
+    val allProductionRecords by viewModel.allProductionRecords.collectAsStateWithLifecycle()
 
     var selectedPeriod by remember { mutableStateOf("This Month") }
     var isRefreshing by remember { mutableStateOf(false) }
@@ -375,6 +376,14 @@ fun OwnerDashboardContent(
         }
 
         // 13. Rich Analytical Widgets & Compliance Timeline
+        item {
+            Spacer(modifier = Modifier.height(16.dp))
+            DailyProductionAndConsumptionChartWidget(
+                productionRecords = allProductionRecords,
+                onNavigateToProduction = { onFormClick("INDUSTRIAL_OPS_DASHBOARD") }
+            )
+        }
+
         item {
             Spacer(modifier = Modifier.height(16.dp))
             DashboardChartCard(revenue = totalRevenue, cashBank = cashBalance + bankBalance)
@@ -902,7 +911,16 @@ fun StaffDashboardContent(
         }
 
         // Staff Custom Widgets!
-        // 4. Today's Attendance Summary Widget
+        // 4. Daily Production and Material Consumption Trends Widget
+        item {
+            Spacer(modifier = Modifier.height(20.dp))
+            DailyProductionAndConsumptionChartWidget(
+                productionRecords = viewModel.allProductionRecords.value,
+                onNavigateToProduction = { onFormClick("INDUSTRIAL_OPS_DASHBOARD") }
+            )
+        }
+
+        // 5. Today's Attendance Summary Widget
         item {
             Spacer(modifier = Modifier.height(20.dp))
             StaffAttendanceSummaryWidget(

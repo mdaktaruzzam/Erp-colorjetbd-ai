@@ -56,11 +56,19 @@ class MainActivity : ComponentActivity() {
     installSplashScreen()
     super.onCreate(savedInstanceState)
     
-    // Initialize Firebase Services gracefully
+    ThemePreferences.init(applicationContext)
     
     enableEdgeToEdge()
     setContent {
-      ColorJetTheme {
+      val themeMode by ThemePreferences.themeMode.collectAsStateWithLifecycle()
+      val context = androidx.compose.ui.platform.LocalContext.current
+
+      ColorJetTheme(
+        themeMode = themeMode,
+        onToggleTheme = {
+          ThemePreferences.toggleTheme(context)
+        }
+      ) {
         MainAppScreen()
       }
     }
@@ -254,8 +262,22 @@ fun TopNavigationBar(ownerName: String, onProfileClick: () -> Unit) {
         }
       }
 
-      // Profile Section
+      // Profile & Theme Switcher Section
       Row(verticalAlignment = Alignment.CenterVertically) {
+        val onToggleTheme = LocalThemeController.current
+        val isDark = LocalIsDarkMode.current
+
+        IconButton(
+          onClick = onToggleTheme,
+          modifier = Modifier.testTag("theme_mode_toggle_button")
+        ) {
+          Icon(
+            imageVector = if (isDark) Icons.Default.LightMode else Icons.Default.DarkMode,
+            contentDescription = if (isDark) "Switch to Light Mode" else "Switch to Dark Mode (Factory Visibility)",
+            tint = if (isDark) Color(0xFFFFD54F) else Color.White
+          )
+        }
+        Spacer(modifier = Modifier.width(4.dp))
         IconButton(onClick = { /* Notifications */ }) {
           Icon(Icons.Default.Notifications, contentDescription = "Notifications", tint = Color.White.copy(alpha = 0.9f))
         }
@@ -1391,6 +1413,48 @@ fun NavigationSidebar(
     }
 
     Column {
+      // Theme Switcher for Sidebar
+      val onToggleTheme = LocalThemeController.current
+      val isDark = LocalIsDarkMode.current
+
+      Row(
+        modifier = Modifier
+          .fillMaxWidth()
+          .clip(RoundedCornerShape(16.dp))
+          .background(if (isDark) MaterialTheme.colorScheme.surfaceVariant else Color(0xFFF1F5F9))
+          .clickable { onToggleTheme() }
+          .padding(horizontal = 14.dp, vertical = 12.dp)
+          .testTag("sidebar_theme_toggle_button"),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
+      ) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+          Icon(
+            imageVector = if (isDark) Icons.Default.LightMode else Icons.Default.DarkMode,
+            contentDescription = null,
+            tint = if (isDark) Color(0xFFFFD54F) else PrimaryBlue,
+            modifier = Modifier.size(20.dp)
+          )
+          Spacer(modifier = Modifier.width(12.dp))
+          Text(
+            text = if (isDark) "Factory Dark Mode" else "Clean Light Mode",
+            color = MaterialTheme.colorScheme.onSurface,
+            fontSize = 13.sp,
+            fontWeight = FontWeight.Bold
+          )
+        }
+        Switch(
+          checked = isDark,
+          onCheckedChange = { onToggleTheme() },
+          colors = SwitchDefaults.colors(
+            checkedThumbColor = Color(0xFFFFD54F),
+            checkedTrackColor = PrimaryBlue
+          )
+        )
+      }
+
+      Spacer(modifier = Modifier.height(12.dp))
+
       // Profile Section
       Row(
         modifier = Modifier
