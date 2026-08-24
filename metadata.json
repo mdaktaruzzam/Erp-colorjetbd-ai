@@ -1,0 +1,8 @@
+{
+  "name": "COLORJET ERP",
+  "description": "Professional Industrial ERP for COLORJET Bangladesh. Quality • Commitment • Service.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

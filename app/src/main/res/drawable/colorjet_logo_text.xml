@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="300dp"
+    android:height="100dp"
+    android:viewportWidth="300"
+    android:viewportHeight="100">
+    <path
+        android:fillColor="#0072CE"
+        android:pathData="M50,10 C27.9,10 10,27.9 10,50 C10,72.1 27.9,90 50,90 C59,90 67,87 74,82 L66,71 C61,74.5 56,76 50,76 C35.6,76 24,64.4 24,50 C24,35.6 35.6,24 50,24 C59,24 67,27.5 72,34 L82,25 C74,16 62.5,10 50,10 Z" />
+    <path
+        android:fillColor="#FF6B00"
+        android:pathData="M82,65 C78,72.5 71,78 62.5,81 L66,71 C71,69 75,66 77.5,61 Z" />
+    <!-- Text Placeholder for COLORJET -->
+    <path
+        android:fillColor="#FF6B00"
+        android:pathData="M110,30 L110,70 L130,70 L130,60 L120,60 L120,30 Z" />
+</vector>

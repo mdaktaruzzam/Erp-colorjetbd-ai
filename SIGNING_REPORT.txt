@@ -1,0 +1,34 @@
+COLORJET BANGLADESH PRODUCTION SIGNING REPORT
+==============================================
+Application ID: com.aistudio.colorjeterp.pxlmjq
+Namespace: com.aistudio.colorjeterp.pxlmjq
+Version Code: 21
+Version Name: 1.0.0
+
+Keystore Filename: colorjet-upload-key.jks
+Key Alias: colorjetupload
+Keystore Format: JKS
+Algorithm: RSA (2048-bit)
+
+Certificate SHA-1: 77:FB:40:4C:6A:4D:AE:0D:8A:72:71:B4:5B:2F:32:0A:1C:60:67:31
+Certificate SHA-256: FF:89:A5:12:E6:F0:52:F2:B8:84:FC:54:E1:11:16:C8:7D:1D:E7:58:D5:CA:50:F8:F1:4A:53:23:F5:91:98:D8
+
+Generated Artifacts:
+-------------------
+1. Release APK:
+   Path: app/build/outputs/apk/release/app-release.apk
+   SHA-256: 6bcf29ce2a03ad700f899ec8c220c8ff9ae9ae7031abd5e2ab62629747996428
+   Verification: APK Signature Scheme v2 = true, Debug = false
+
+2. Release AAB (Android App Bundle):
+   Path: app/build/outputs/bundle/release/app-release.aab
+   SHA-256: a834f700e9f8d8e566c1546435f0abf6fe70c0b0038a8d0e22e312fc39523a10
+   Verification: Bundle Signed = true, Certificate Matched = true
+
+3. Upload Certificate:
+   Path: upload_certificate.pem
+
+4. Private Signing Credentials:
+   Path: SIGNING_CREDENTIALS_PRIVATE.txt
+
+CONFIRMATION: Both app-release.apk and app-release.aab have been built and verified as production release-signed (not debug-signed) using colorjet-upload-key.jks.

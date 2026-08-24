@@ -1,0 +1,9 @@
+# Error Inventory
+
+This document chronicles the diagnostic audit, root causes, and successful resolutions applied to critical software and design blocks.
+
+| Issue ID | Module | Screen or API | Error description | Expected result | Actual result | Severity | Root cause | Affected files | Fix applied | Status |
+| :---: | :--- | :--- | :--- | :--- | :--- | :---: | :--- | :--- | :--- | :---: |
+| **ERR-01** | UI Core | DashboardScreen | `KPICard` overload signature mismatch. Missing positional parameters for standard dashboard action rows. | High-fidelity KPI action cards with clean parameters. | Compile-time unresolved symbol error. | High | Custom `KPICard` signature changed without updating old references. | `DashboardScreen.kt`, `KPICard.kt` | Added secondary overload constructor supporting standard signatures and callbacks. | **PASS** |
+| **ERR-02** | Brand Core | Seeding Database | Default seed data reference to Indian competitor supplier names. | Global suppliers reflecting verified Bangladesh trade agents. | Indian supplier text strings displayed in logs. | Medium | Static seed template files referenced old supplier placeholder configurations. | `InventoryData.kt`, `OwnerForms.kt` | Re-seeded with verified China/Singapore industrial vendors and logistics partners. | **PASS** |
+| **ERR-03** | Manifest Core | Build Execution | Missing Jetpack Compose Core Splashscreen API dependency causing runtime crashes on start. | Fluid, elegant starting logo splash animation matching corporate design guidelines. | Android runtime theme crash during initialization. | High | Main activity initialized starting theme before dependency was successfully integrated in project build. | `build.gradle.kts`, `MainActivity.kt`, `themes.xml` | Integrated official `androidx.core:core-splashscreen` API and bound it inside `MainActivity.kt`. | **PASS** |
