@@ -8,24 +8,26 @@
 define('MIGRATION_ROOT', dirname(__FILE__));
 
 // Security Configuration
-define('MIGRATION_SECURE_TOKEN', 'CJ_ERP_BD_MIGRATE_2026_SECURE_KEY'); // Secure token for browser-based execution
-define('ALLOW_CLI_EXECUTION', true); // Allow terminal execution without token
-define('RESTRICT_TO_LOCALHOST', false); // Restrict to localhost requests for enhanced production security
+$defaultToken = 'REPLACE_WITH_SECURE_TOKEN';
+$envToken = getenv('COLORJET_API_TOKEN');
+define('MIGRATION_SECURE_TOKEN', $envToken !== false && $envToken !== '' ? $envToken : $defaultToken);
+define('ALLOW_CLI_EXECUTION', filter_var(getenv('ALLOW_CLI_EXECUTION') ?: 'true', FILTER_VALIDATE_BOOLEAN));
+define('RESTRICT_TO_LOCALHOST', filter_var(getenv('RESTRICT_TO_LOCALHOST') ?: 'false', FILTER_VALIDATE_BOOLEAN));
 
 // Database Provider Configuration
 // Options: 'sqlite' or 'mysql'
-define('DB_PROVIDER', 'sqlite'); 
+define('DB_PROVIDER', getenv('DB_PROVIDER') ?: 'sqlite');
 
 // SQLite Specific Configuration
 define('SQLITE_DB_PATH', MIGRATION_ROOT . '/database.sqlite');
 
 // MySQL Specific Configuration
-define('DB_HOST', '127.0.0.1');
-define('DB_PORT', '3306');
-define('DB_NAME', 'colorjet_erp_db');
-define('DB_USER', 'colorjet_admin');
-define('DB_PASS', 'secure_erp_password_2026');
-define('DB_CHARSET', 'utf8mb4');
+define('DB_HOST', getenv('DB_HOST') ?: '127.0.0.1');
+define('DB_PORT', getenv('DB_PORT') ?: '3306');
+define('DB_NAME', getenv('DB_NAME') ?: 'colorjet_erp_db');
+define('DB_USER', getenv('DB_USER') ?: 'colorjet_admin');
+define('DB_PASS', getenv('DB_PASS') ?: 'change_this_secure_password');
+define('DB_CHARSET', getenv('DB_CHARSET') ?: 'utf8mb4');
 
 // Centralized Auditing System
 require_once MIGRATION_ROOT . '/AuditLogger.php';
