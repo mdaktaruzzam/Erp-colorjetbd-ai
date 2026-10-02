@@ -78,9 +78,8 @@ secrets {
 }
 
 googleServices {
-  missingGoogleServicesStrategy = MissingGoogleServicesStrategy.WARN
+  missingGoogleServicesStrategy = MissingGoogleServicesStrategy.ERROR
 }
-
 
 // Some unused dependencies are commented out below instead of being removed.
 // This makes it easy to add them back in the future if needed.
